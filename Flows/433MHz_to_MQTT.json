@@ -1,0 +1,294 @@
+[
+    {
+        "id": "98cfa763.a2e488",
+        "type": "rfx-sensor",
+        "z": "bea7e2ac.d7f56",
+        "name": "rfx-sensor read",
+        "port": "dda18587.bb39a8",
+        "topicSource": "all",
+        "topic": "",
+        "x": 120,
+        "y": 160,
+        "wires": [
+            [
+                "6243fccb.fc8244"
+            ]
+        ]
+    },
+    {
+        "id": "6243fccb.fc8244",
+        "type": "switch",
+        "z": "bea7e2ac.d7f56",
+        "name": "Route RFX to MQTT",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "TH9/0x9700",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "TEMP10/0x3D01",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 2,
+        "x": 360,
+        "y": 160,
+        "wires": [
+            [
+                "c5765e0a.1dff3",
+                "aa633ab1.8b7858"
+            ],
+            [
+                "b34b578e.1d7458"
+            ]
+        ]
+    },
+    {
+        "id": "46dee593.06a21c",
+        "type": "mqtt out",
+        "z": "bea7e2ac.d7f56",
+        "name": "Publish MQTT message",
+        "topic": "",
+        "qos": "0",
+        "retain": "false",
+        "broker": "3bf4f1e1.ca763e",
+        "x": 970,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "c5765e0a.1dff3",
+        "type": "change",
+        "z": "bea7e2ac.d7f56",
+        "name": "Create message and topic",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.temperature.value",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Home/Outdoor/Temperature",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 660,
+        "y": 120,
+        "wires": [
+            [
+                "46dee593.06a21c"
+            ]
+        ]
+    },
+    {
+        "id": "b34b578e.1d7458",
+        "type": "change",
+        "z": "bea7e2ac.d7f56",
+        "name": "Create message and topic",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.temperature.value",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Home/Porch/Temperature",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 660,
+        "y": 240,
+        "wires": [
+            [
+                "46dee593.06a21c"
+            ]
+        ]
+    },
+    {
+        "id": "aa633ab1.8b7858",
+        "type": "change",
+        "z": "bea7e2ac.d7f56",
+        "name": "Create message and topic",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.humidity.value",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Home/Outdoor/Humidity",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 660,
+        "y": 180,
+        "wires": [
+            [
+                "46dee593.06a21c"
+            ]
+        ]
+    },
+    {
+        "id": "ae288c3e.9f562",
+        "type": "rfx-lights-in",
+        "z": "bea7e2ac.d7f56",
+        "name": "",
+        "port": "dda18587.bb39a8",
+        "topicSource": "all",
+        "topic": "",
+        "x": 100,
+        "y": 360,
+        "wires": [
+            [
+                "f9942cd1.c02f8"
+            ]
+        ]
+    },
+    {
+        "id": "6e102dc8.622c84",
+        "type": "function",
+        "z": "bea7e2ac.d7f56",
+        "name": "increase motion count as msg.payload",
+        "func": "var count = flow.get('motion_count')||0;\nvar newMsg = { payload: count };\ncount = count + 1;\nif ( count > 100 ) {\n    count = 0;\n}\nflow.set('motion_count', count);\nreturn newMsg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 630,
+        "y": 360,
+        "wires": [
+            [
+                "74c0ba31.e51d64"
+            ]
+        ]
+    },
+    {
+        "id": "f9942cd1.c02f8",
+        "type": "switch",
+        "z": "bea7e2ac.d7f56",
+        "name": "Check if porch motion sensor",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "AC/0x031B9BF2/16",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 1,
+        "x": 310,
+        "y": 360,
+        "wires": [
+            [
+                "6e102dc8.622c84"
+            ]
+        ]
+    },
+    {
+        "id": "74c0ba31.e51d64",
+        "type": "change",
+        "z": "bea7e2ac.d7f56",
+        "name": "Create topic",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Home/Porch/Motion",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 870,
+        "y": 360,
+        "wires": [
+            [
+                "46dee593.06a21c"
+            ]
+        ]
+    },
+    {
+        "id": "fb6500b2.9bc2",
+        "type": "comment",
+        "z": "bea7e2ac.d7f56",
+        "name": "Read Telldus 433MHz motion sensor",
+        "info": "",
+        "x": 179.52430725097656,
+        "y": 308.9166946411133,
+        "wires": []
+    },
+    {
+        "id": "f2a2c280.1a608",
+        "type": "comment",
+        "z": "bea7e2ac.d7f56",
+        "name": "Read 433MHz climate sensors",
+        "info": "",
+        "x": 167.52777099609375,
+        "y": 113.91667938232422,
+        "wires": []
+    },
+    {
+        "id": "dda18587.bb39a8",
+        "type": "rfxtrx-port",
+        "z": "",
+        "port": "/dev/serial/by-id/usb-RFXCOM_RFXtrx433_A11D2A2J-if00-port0",
+        "rfyVenetianMode": "EU"
+    },
+    {
+        "id": "3bf4f1e1.ca763e",
+        "type": "mqtt-broker",
+        "z": "",
+        "broker": "192.168.1.16",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": ""
+    }
+]
