@@ -1,0 +1,73 @@
+[
+    {
+        "id": "da574c4d.80da4",
+        "type": "rfx-lights-out",
+        "z": "edd03f12.907db",
+        "name": "",
+        "port": "dda18587.bb39a8",
+        "topicSource": "msg",
+        "retransmit": "none",
+        "retransmitInterval": 20,
+        "topic": "",
+        "x": 660,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "916c8e6f.89341",
+        "type": "mqtt in",
+        "z": "edd03f12.907db",
+        "name": "",
+        "topic": "Telldus/Outlet/#",
+        "qos": "0",
+        "broker": "3bf4f1e1.ca763e",
+        "x": 120,
+        "y": 80,
+        "wires": [
+            [
+                "92089336.49d6c"
+            ]
+        ]
+    },
+    {
+        "id": "92089336.49d6c",
+        "type": "function",
+        "z": "edd03f12.907db",
+        "name": "Set topic and payload for Telldus outlet",
+        "func": "var parts = msg.topic.split(\"/\");\nif (parts.length === 3) {\n    msg.topic = \"AC/0x03D8C746/\" + parts[2];\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 400,
+        "y": 80,
+        "wires": [
+            [
+                "da574c4d.80da4"
+            ]
+        ]
+    },
+    {
+        "id": "dda18587.bb39a8",
+        "type": "rfxtrx-port",
+        "z": "",
+        "port": "/dev/serial/by-id/usb-RFXCOM_RFXtrx433_A11D2A2J-if00-port0",
+        "rfyVenetianMode": "EU"
+    },
+    {
+        "id": "3bf4f1e1.ca763e",
+        "type": "mqtt-broker",
+        "z": "",
+        "broker": "192.168.1.16",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": ""
+    }
+]
