@@ -1,5 +1,12 @@
 [
     {
+        "id": "bea7e2ac.d7f56",
+        "type": "tab",
+        "label": "433MHz to MQTT",
+        "disabled": false,
+        "info": ""
+    },
+    {
         "id": "98cfa763.a2e488",
         "type": "rfx-sensor",
         "z": "bea7e2ac.d7f56",
@@ -32,10 +39,21 @@
                 "t": "eq",
                 "v": "TEMP10/0x3D01",
                 "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "TH9/0x8700",
+                "vt": "str"
+            },
+            {
+                "t": "regex",
+                "v": "TH10/.*",
+                "vt": "str",
+                "case": false
             }
         ],
         "checkall": "true",
-        "outputs": 2,
+        "outputs": 4,
         "x": 360,
         "y": 160,
         "wires": [
@@ -45,6 +63,13 @@
             ],
             [
                 "b34b578e.1d7458"
+            ],
+            [
+                "2b2aa7d0.21ac78",
+                "cb7d1b7c.e05db8"
+            ],
+            [
+                "d37eeb7c.901758"
             ]
         ]
     },
@@ -57,15 +82,15 @@
         "qos": "0",
         "retain": "false",
         "broker": "3bf4f1e1.ca763e",
-        "x": 970,
-        "y": 180,
+        "x": 1030,
+        "y": 160,
         "wires": []
     },
     {
         "id": "c5765e0a.1dff3",
         "type": "change",
         "z": "bea7e2ac.d7f56",
-        "name": "Create message and topic",
+        "name": "Outdoor temp: Create message and topic",
         "rules": [
             {
                 "t": "set",
@@ -87,7 +112,7 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 660,
+        "x": 700,
         "y": 120,
         "wires": [
             [
@@ -99,7 +124,7 @@
         "id": "b34b578e.1d7458",
         "type": "change",
         "z": "bea7e2ac.d7f56",
-        "name": "Create message and topic",
+        "name": "Porch temp: Create message and topic",
         "rules": [
             {
                 "t": "set",
@@ -121,7 +146,7 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 660,
+        "x": 700,
         "y": 240,
         "wires": [
             [
@@ -133,7 +158,7 @@
         "id": "aa633ab1.8b7858",
         "type": "change",
         "z": "bea7e2ac.d7f56",
-        "name": "Create message and topic",
+        "name": "Outdoor hum: Create message and topic",
         "rules": [
             {
                 "t": "set",
@@ -155,7 +180,7 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 660,
+        "x": 700,
         "y": 180,
         "wires": [
             [
@@ -175,7 +200,9 @@
         "y": 360,
         "wires": [
             [
-                "f9942cd1.c02f8"
+                "f9942cd1.c02f8",
+                "a60fab5c.9421b8",
+                "ace84787.a1295"
             ]
         ]
     },
@@ -265,6 +292,242 @@
         "x": 167.52777099609375,
         "y": 113.91667938232422,
         "wires": []
+    },
+    {
+        "id": "2b2aa7d0.21ac78",
+        "type": "change",
+        "z": "bea7e2ac.d7f56",
+        "name": "Bathroom Temp: Create message and topic",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.temperature.value",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Home/GroundFloor/Bathroom/Temperature",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 710,
+        "y": 280,
+        "wires": [
+            [
+                "46dee593.06a21c"
+            ]
+        ]
+    },
+    {
+        "id": "cb7d1b7c.e05db8",
+        "type": "change",
+        "z": "bea7e2ac.d7f56",
+        "name": "Bathroom hum: Create message and topic",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.humidity.value",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Home/GroundFloor/Bathroom/Humidity",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 710,
+        "y": 320,
+        "wires": [
+            [
+                "46dee593.06a21c"
+            ]
+        ]
+    },
+    {
+        "id": "a60fab5c.9421b8",
+        "type": "switch",
+        "z": "bea7e2ac.d7f56",
+        "name": "Check if back door open sensor",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "AC/0x01973FFE/16",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 1,
+        "x": 270,
+        "y": 520,
+        "wires": [
+            [
+                "b421e2.00099e2"
+            ]
+        ]
+    },
+    {
+        "id": "b421e2.00099e2",
+        "type": "function",
+        "z": "bea7e2ac.d7f56",
+        "name": "set message",
+        "func": "if (msg.payload === 'On') {\n    msg.payload = 1.0;\n} else if (msg.payload === 'Off') {\n    msg.payload = 0.0;\n}\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 530,
+        "y": 520,
+        "wires": [
+            [
+                "706b7925.679e98"
+            ]
+        ]
+    },
+    {
+        "id": "706b7925.679e98",
+        "type": "change",
+        "z": "bea7e2ac.d7f56",
+        "name": "Create topic",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Home/BackDoor/Open",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 750,
+        "y": 520,
+        "wires": [
+            [
+                "46dee593.06a21c"
+            ]
+        ]
+    },
+    {
+        "id": "d37eeb7c.901758",
+        "type": "change",
+        "z": "bea7e2ac.d7f56",
+        "name": "Workroom temp: Create message and topic",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.temperature.value",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Home/Workroom/Temperature",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 710,
+        "y": 80,
+        "wires": [
+            [
+                "46dee593.06a21c"
+            ]
+        ]
+    },
+    {
+        "id": "ace84787.a1295",
+        "type": "switch",
+        "z": "bea7e2ac.d7f56",
+        "name": "Check if back porch motion sensor",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "AC/0x002353F2/16",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 1,
+        "x": 320,
+        "y": 440,
+        "wires": [
+            [
+                "2c84b73d.a34c08"
+            ]
+        ]
+    },
+    {
+        "id": "2c84b73d.a34c08",
+        "type": "function",
+        "z": "bea7e2ac.d7f56",
+        "name": "increase motion count as msg.payload",
+        "func": "var count = flow.get('motion_count2')||0;\nvar newMsg = { payload: count };\ncount = count + 1;\nif ( count > 100 ) {\n    count = 0;\n}\nflow.set('motion_count2', count);\nreturn newMsg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 650,
+        "y": 440,
+        "wires": [
+            [
+                "b3317dd5.76b8f"
+            ]
+        ]
+    },
+    {
+        "id": "b3317dd5.76b8f",
+        "type": "change",
+        "z": "bea7e2ac.d7f56",
+        "name": "Create topic",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Home/BackPorch/Motion",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 910,
+        "y": 440,
+        "wires": [
+            [
+                "46dee593.06a21c"
+            ]
+        ]
     },
     {
         "id": "dda18587.bb39a8",
